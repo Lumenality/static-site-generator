@@ -11,3 +11,6 @@ docs/
 
 # OS junk
 .DS_Store
+
+# Deprecated files
+OLD*
