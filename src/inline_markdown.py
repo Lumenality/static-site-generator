@@ -134,3 +134,4 @@ if __name__ == "__main__":
         TextType.TEXT,
     )
     split_node = split_nodes_image([node])
+    print(split_node)

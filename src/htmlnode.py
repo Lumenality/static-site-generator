@@ -13,8 +13,8 @@ class HTMLNode:
             return ""
         result = []
         for k, v in self.props.items():
-            result.append(f"{k}={v}")
-        return " ".join(result)
+            result.append(f'{k}="{v}"')
+        return " " + " ".join(result) if result else ""
 
     def __repr__(self):
         return f"{self.tag}\n{self.value}\n{self.children}\n{self.props}"
@@ -25,13 +25,13 @@ class LeafNode(HTMLNode):
         super().__init__(tag, value, None, props)
 
     def to_html(self):
-        if self.value is None:
-            raise ValueError("all leaf nodes must have a value")
         if self.tag is None:
             return self.value
-        if self.props is None:
-            return f"<{self.tag}>{self.value}</{self.tag}>"
-        return f"<{self.tag} {self.props}>{self.value}</{self.tag}>"
+
+        if self.tag in {"img", "br", "hr", "input", "meta", "link"}:
+            return f"<{self.tag}{self.props_to_html()} />"
+
+        return f"<{self.tag}{self.props_to_html()}>{self.value}</{self.tag}>"
 
     def __repr__(self):
         return f"{self.tag}\n{self.value}\n{self.props}"

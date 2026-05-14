@@ -108,7 +108,7 @@ def block_to_html_node(block, block_type):
         case BlockType.QUOTE:
             lines = []
             for line in block.split("\n"):
-                lines.append(line[1:])
+                lines.append(line[1:].lstrip())
             quote = " ".join(lines)
             return ParentNode("blockquote", text_to_children(quote))
 
