@@ -1,8 +1,8 @@
 from enum import Enum
-from inline_markdown import text_to_textnodes, text_to_children
 
-# from textnode import text_node_to_html_node
-from htmlnode import ParentNode
+from inline_markdown import text_to_children
+from htmlnode import ParentNode, LeafNode
+from textnode import TextType, TextNode, text_node_to_html_node
 
 
 class BlockType(Enum):
@@ -19,13 +19,11 @@ def markdown_to_blocks(markdown):
     Output: List of stripped lines of markdown text
     """
     split_markdown = markdown.split("\n\n")
-    # print(f"Hey, split markdown here: ", split_markdown)
     result = []
     for line in split_markdown:
         line = line.strip()
         if line == "":
             continue
-        # print(line)
         result.append(line)
 
     return result
@@ -95,6 +93,49 @@ def block_to_block_type(markdown_text):
 def block_to_html_node(block, block_type):
     match block_type:
         case BlockType.PARAGRAPH:
-            return ParentNode("p", text_to_children(block))
+            return ParentNode("p", text_to_children(block.replace("\n"," ")))
+
+        case BlockType.HEADING:
+            heading_level = len(block.split(" ", 1)[0])
+            return ParentNode(
+                f"h{heading_level}", text_to_children(block.split(" ", 1)[1])
+            )
+
+        case BlockType.CODE:
+            code_node = TextNode((block.split("\n", 1)[1][:-3]), TextType.CODE)
+            return ParentNode("pre", [text_node_to_html_node(code_node)])
+
+        case BlockType.QUOTE:
+            lines = []
+            for line in block.split("\n"):
+                lines.append(line[1:])
+            quote = " ".join(lines)
+            return ParentNode("blockquote", text_to_children(quote))
+
+        case BlockType.UNORDERED_LIST:
+            list_items = []
+
+            for line in block.split("\n"):
+                item_text = line[2:]
+                list_items.append(ParentNode("li", text_to_children(item_text)))
+
+            return ParentNode("ul", list_items)
+
+        case BlockType.ORDERED_LIST:
+            list_items = []
+
+            for line in block.split("\n"):
+                _, item_text = line.split(" ", 1)
+                list_items.append(ParentNode("li", text_to_children(item_text)))
+
+            return ParentNode("ol", list_items)
+
         case _:
             raise ValueError(f"unknown text node type: {block_type}")
+
+# quote = ">Ernest\n>Hemingway"
+# print(block_to_html_node(quote,block_to_block_type(quote)).to_html())
+# unordered_list = "- item 1\n- item 2\n- item 3"
+# print(block_to_html_node(unordered_list,block_to_block_type(unordered_list)).to_html())
+# ordered_list = "1. item 1\n2. item 2\n3. item 3"
+# print(block_to_html_node(ordered_list,block_to_block_type(ordered_list)).to_html())
