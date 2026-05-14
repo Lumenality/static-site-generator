@@ -5,7 +5,6 @@ from shutil import copy, rmtree
 
 from generate_content import generate_pages_recursive
 
-PUBLIC_DIR = 'public'
 STATIC_DIR = 'static'
 CONTENT_PATH = "content"
 TEMPLATE_PATH = "template.html"
@@ -28,12 +27,12 @@ def main():
         return
 
     print(f"The '{STATIC_DIR}' directory is ready for deployment.")
-    print(f"Copying files from '{STATIC_DIR}' to '{PUBLIC_DIR}'...\n")
-    copy_all(STATIC_DIR, PUBLIC_DIR)
+    print(f"Copying files from '{STATIC_DIR}' to '{DEST_PATH}'...\n")
+    copy_all(STATIC_DIR, DEST_PATH)
     
     # Run a printout for all files in the public directory
-    print(f"Files now in '{PUBLIC_DIR}' directory:")
-    for root, dirs, files in os.walk(PUBLIC_DIR):
+    print(f"Files now in '{DEST_PATH}' directory:")
+    for root, dirs, files in os.walk(DEST_PATH):
         for file in files:
             print(os.path.join(root, file))
     
