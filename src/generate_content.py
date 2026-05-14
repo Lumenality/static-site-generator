@@ -21,3 +21,17 @@ def generate_page(from_path, template_path, dest_path):
         page_title = extract_title(markdown_text)
         output_html = template.read().replace("{{ Title }}", page_title).replace("{{ Content }}", markdown_html)
         html_result.write(output_html)
+
+def generate_pages_recursive(dir_path_content, template_path, dest_dir_path):
+    for root, dirs, files in os.walk(dir_path_content):
+        for file in files:
+            filepath = os.path.join(root, file)
+            relative_path = os.path.relpath(filepath, dir_path_content)
+            if file.endswith((".md")):
+                html_relative_path = relative_path.replace(".md", ".html")
+                dest_path = os.path.join(dest_dir_path,html_relative_path)
+                
+                generate_page(filepath,template_path,dest_path)
+
+if __name__ == "__main__":
+    generate_pages_recursive("content/",None,None)

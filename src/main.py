@@ -2,13 +2,13 @@
 import os
 from shutil import copy, rmtree
 
-from generate_content import generate_page
+from generate_content import generate_pages_recursive
 
 PUBLIC_DIR = 'public'
 STATIC_DIR = 'static'
-CONTENT_PATH = "content/index.md"
+CONTENT_PATH = "content"
 TEMPLATE_PATH = "template.html"
-DEST_PATH = "public/index.html"
+DEST_PATH = "public"
 
 def main():
     # Check if the static directory exists
@@ -32,7 +32,7 @@ def main():
             print(os.path.join(root, file))
     
     # Generate a site from two files (markdown and template)
-    generate_page(CONTENT_PATH,TEMPLATE_PATH,DEST_PATH)
+    generate_pages_recursive(CONTENT_PATH, TEMPLATE_PATH, DEST_PATH)
 
 def copy_all(source_dir, dest_dir):
     # Remove the destination directory if it exists
