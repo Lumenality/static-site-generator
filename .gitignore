@@ -6,7 +6,7 @@ __pycache__/
 .venv/
 
 # Build/output artifacts
-public/
+#public/
 docs/
 
 # OS junk

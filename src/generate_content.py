@@ -9,7 +9,7 @@ def extract_title(markdown):
             return line.split(" ",1)[1]
     raise Exception("no title found!")
 
-def generate_page(from_path, template_path, dest_path):
+def generate_page(from_path, template_path, dest_path, basepath = "/"):
     print(f"Generating page from {from_path} to {dest_path} using {template_path}")
     # Create directory for dest_path if the files do not exist
     dir_name = os.path.dirname(dest_path)
@@ -20,9 +20,10 @@ def generate_page(from_path, template_path, dest_path):
         markdown_html = markdown_to_html_node(markdown_text).to_html()
         page_title = extract_title(markdown_text)
         output_html = template.read().replace("{{ Title }}", page_title).replace("{{ Content }}", markdown_html)
+        output_html = output_html.replace('href="/',f'href="{basepath}').replace('src="/',f'src="{basepath}')
         html_result.write(output_html)
 
-def generate_pages_recursive(dir_path_content, template_path, dest_dir_path):
+def generate_pages_recursive(dir_path_content, template_path, dest_dir_path, basepath = "/"):
     for root, dirs, files in os.walk(dir_path_content):
         for file in files:
             filepath = os.path.join(root, file)
@@ -31,7 +32,8 @@ def generate_pages_recursive(dir_path_content, template_path, dest_dir_path):
                 html_relative_path = relative_path.replace(".md", ".html")
                 dest_path = os.path.join(dest_dir_path,html_relative_path)
                 
-                generate_page(filepath,template_path,dest_path)
+                generate_page(filepath,template_path,dest_path,basepath)
 
 if __name__ == "__main__":
-    generate_pages_recursive("content/",None,None)
+    # DEPRECATED DEBUG generate_pages_recursive("content/",None,None)
+    print("Running generate_content for debugging")
